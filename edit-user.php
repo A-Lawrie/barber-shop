@@ -87,7 +87,7 @@ if ($result->num_rows > 0) {
                 </div> 
                 
                 <div class="py-4 px-4">
-                <input style="background-color: peachpuff; font-weight:bold;" type="submit" name="update" value="Update Profile">
+                <input style="background-color: peachpuff; font-weight:bold;" type="submit" name="edit-user" value="Update Profile">
                 </div>
                
              </div> 
@@ -95,6 +95,19 @@ if ($result->num_rows > 0) {
             </div> 
         </div>
 </div>
+
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="alert alert-success">
+        <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+    </div>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error'])): ?>
+    <div class="alert alert-danger">
+        <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+    </div>
+<?php endif; ?>
+
 
 <script>
         // Handle clicking on the profile picture to open the file input

@@ -6,14 +6,13 @@ date_default_timezone_set("Africa/Nairobi");
 $date = date("Y-m-d H:i:s");
 $filedate = date("Y_m_d_H_i_s");
 
-if (isset($_FILES['profile_photo'])) {
+if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
     $uploadDir = 'uploads/';
     $fileName = basename($_FILES['profile_photo']['name']);
     $targetFile = $uploadDir . $fileName;
 
     if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $targetFile)) {
         // Update the database with the new file name
-        // Assume $conn is your database connection
         $UserID = $_SESSION['userid'];
         $query = "UPDATE users SET ProfilePicture = ? WHERE UserID = ?";
         $stmt = $conn->prepare($query);
@@ -24,7 +23,11 @@ if (isset($_FILES['profile_photo'])) {
     } else {
         echo json_encode(['success' => false, 'error' => 'Failed to upload file.']);
     }
+} else {
+    // No new file uploaded, retain the current profile picture
+    echo json_encode(['success' => true, 'message' => 'No new profile photo uploaded. Current photo retained.']);
 }
+
 
 if(isset($_POST['login'])) {
     // Get user input
@@ -68,39 +71,35 @@ if(isset($_POST['login'])) {
         header('location: login.php');
         exit();
     }
-}elseif (isset($_POST['edit-user']) && isset($_FILES['profile_photo'])) {
+}elseif (isset($_POST['edit-user'])) {
     $UserId = $_SESSION['userid'];
-    $file = $_FILES['profile_photo'];
-    $uploadDir = 'uploads/';
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
 
-    if (in_array($file['type'], $allowedTypes)) {
-        $filename = uniqid() . '-' . basename($file['name']);
-        $targetFile = $uploadDir . $filename;
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    
+    // Retrieve the submitted full name
+    $fullName = trim($_POST['name']); // Trim to remove any leading/trailing spaces
 
-        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            // Update the database
-            $sql = "UPDATE users SET ProfilePicture = ? WHERE UserID = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param('si', $filename, $userId);
+    // Split the full name into first name and last name
+    $nameParts = explode(' ', $fullName, 2); // Limit to 2 parts
+    $FName = isset($nameParts[0]) ? $nameParts[0] : '';
+    $LName = isset($nameParts[1]) ? $nameParts[1] : ''; 
 
-            if ($stmt->execute()) {
-                $response['success'] = true;
-                $response['filename'] = $filename;
-            } else {
-                $response['error'] = 'Failed to update database.';
-            }
-        } else {
-            $response['error'] = 'Failed to upload file.';
-        }
+    $query = "UPDATE users set FName = ?, LName = ?, Email = ?, PhoneNum = ? WHERE UserID = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ssssi", $FName, $LName, $email, $phone, $UserId);
+
+    if ($stmt->execute()) {
+        // Redirect or show a success message
+        $_SESSION['success'] = "Profile updated successfully";
+        header("Location: user-profile.php");
     } else {
-        $response['error'] = 'Invalid file type. Only JPEG, PNG, and GIF are allowed.';
+        // Redirect or show an error message
+        $_SESSION['error'] = "Failed to update profile";
+        header("Location: edit-user.php");
     }
-} else {
-    $response['error'] = 'No file uploaded.';
 }
 
 header('Content-Type: application/json');
-echo json_encode($response);
 ?>
 
