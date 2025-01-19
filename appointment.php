@@ -1,3 +1,14 @@
+<?php
+include 'includes/connect.php';
+
+session_start();
+
+if (!isset($_SESSION['userid'])) {
+    header("Location: login.php");
+    exit();
+}
+$res = $conn->query("SELECT * FROM barbers ORDER BY BarberID ASC");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +20,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
  
      <!-- Site Metas -->
-    <title>SMBarber - Responsive HTML5 Template</title>  
+    <title>SMBarber - Book an Appointment</title>  
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -17,6 +28,10 @@
     <!-- Site Icons -->
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+    <!-- Calendly Links -->
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -29,7 +44,7 @@
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="css/responsive.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/style.css">
 
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -146,39 +161,20 @@
 								</div>
 							</div>
 						</div>
+
+                        
+            
+
                         <div class="col-md-6">
                             <div class="contact_form">
                                 <div id="message"></div>
-                                <form id="contactform" class="row" action="contact.php" name="contactform" method="post">
-                                    <fieldset class="row-fluid">
-                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                            <input type="text" name="first_name" id="first_name" class="form-control" placeholder="First Name">
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                            <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Last Name">
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                            <input type="email" name="email" id="email" class="form-control" placeholder="Your Email">
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                            <input type="text" name="phone" id="phone" class="form-control" placeholder="Your Phone">
-                                        </div>
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                            <label class="sr-only">Select Time</label>
-                                            <select name="select_service" id="select_service" class="selectpicker form-control" data-style="btn-white">
-                                                <option value="selecttime">Select Time</option>
-                                                <option value="Weekdays">Weekdays</option>
-                                                <option value="Weekend">Weekend</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                            <textarea class="form-control" name="comments" id="comments" rows="6" placeholder="Give us more details.."></textarea>
-                                        </div>
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-                                            <button type="submit" value="SEND" id="submit" class="btn btn-light btn-radius btn-brd grd1 btn-block subt">Get Appointment</button>
-                                        </div>
-                                    </fieldset>
-                                </form>
+
+                                <div id="BarbersSection">
+
+                        </div>
+                        <br><br><br>
+
+                        <a href="#" id="calendlyLink" style="display: none; text-decoration:none; background-color:blue; color:white; padding:10px; border-radius:8px; text-align:center; height:50px; font-weight:bold;" onclick="openCalendlyWidget(); return false;">Select An Appointment Time</a>
                             </div>
                         </div><!-- end col -->
                     </div><!-- end row -->
@@ -282,6 +278,66 @@
 
     <a href="#" id="scroll-to-top" class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            
+                        
+
+            <script>
+            function openCalendlyWidget() {
+                var BarberID = $('#barberSelect').val();  
+
+                if (BarberID) {
+                    $.ajax({
+                        url: 'get_calendly_link.php',
+                        type: 'POST',
+                        data: { DoctorID: DoctorID },
+                        success: function(response) {
+                            Calendly.initPopupWidget({ url: response });
+                        },
+                        error: function() {
+                            alert('Error fetching Calendly link');
+                        }
+                    });
+                } else {
+                    alert('Please select a barber.');
+                }
+            }
+
+            $(document).ready(function() {
+                $.ajax({
+                    url: 'get_barbers.php', 
+                    type: 'GET',
+                    success: function(response) {
+                        $('#BarbersSection').html(response); 
+                    },
+                    error: function() {
+                        alert('Error fetching barbers');
+                    }
+                });
+
+                $(document).on('change', '#barberSelect', function() {
+                    var BarberID = $(this).val();
+
+                    if (BarberID) {
+                        $.ajax({
+                            url: 'get_calendly_link.php', 
+                            type: 'POST',
+                            data: { BarberID: BarberID },
+                            success: function(response) {
+                                $('#calendlyLink').attr('href', response);
+                                $('#calendlyLink').show();  
+                            },
+                            error: function() {
+                                alert('Error fetching Calendly link');
+                            }
+                        });
+                    } else {
+                        $('#calendlyLink').hide(); 
+                    }
+                });
+            });
+            </script>
+
     <!-- ALL JS FILES -->
     <script src="js/all.js"></script>
 	<script src="js/responsive-tabs.js"></script>
@@ -306,6 +362,8 @@
         });
     })(jQuery);
     </script>
+
+    
 
 </body>
 </html>

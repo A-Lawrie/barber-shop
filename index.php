@@ -96,9 +96,9 @@
 								<div class="col-md-8 col-md-offset-2 col-sm-12">
 									<div class="big-tagline text-center">
 										<h2><strong>The Barber Shop</strong><br>
-										in New York</h2>
+										in Nairobi</h2>
 										<p class="lead">With SMBarber responsive landing page template, you can showcase your next barber shop websites!</p>
-										<a href="#" class="btn btn-light btn-radius btn-brd grd1 effect-1 butn">APPOINTMENT NOW</a>
+										<a href="appointment.php" class="btn btn-light btn-radius btn-brd grd1 effect-1 butn">APPOINTMENT NOW</a>
 									</div>
 								</div>
 							</div>
