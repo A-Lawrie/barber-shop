@@ -36,6 +36,14 @@ foreach ($data['collection'] as $event) {
         $eventDetails = $event;
         break;
     }
+    if (isset($event['event_memberships'])) {
+        foreach ($event['event_memberships'] as $membership) {
+            // Extract the user_name
+            if (isset($membership['user_name'])) {
+                $barberName = $membership['user_name'];
+            }
+        }
+    }
 }
 
 if (!$eventDetails) {
@@ -62,6 +70,8 @@ if ($response === false) {
 }
 
 $inviteeData = json_decode($response, true);
+
+
 
 
 
@@ -96,11 +106,11 @@ foreach ($inviteeData['collection'] as $invitee) {
     $status = 'Pending'; // Default status
 
     // Insert into database
-    $sql = "INSERT INTO appointments (AppointmentID, CustomerName, CustomerEmail, CustomerPhone, StartTime, EndTime, Status) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO appointments (AppointmentID, BarberName, CustomerName, CustomerEmail, CustomerPhone, StartTime, EndTime, Status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('sssssss', $appointmentID, $customerName, $customerEmail, $customerPhone, $startTime, $endTime, $status);
+    $stmt->bind_param('ssssssss', $appointmentID, $barberName, $customerName, $customerEmail, $customerPhone, $startTime, $endTime, $status);
 
     if ($stmt->execute()) {
         echo "Appointment for $customerName added successfully!<br>";
