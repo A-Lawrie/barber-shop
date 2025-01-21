@@ -9,13 +9,17 @@ Features
     Customers can book appointments with specific barbers directly through the website.
     Integration with the Calendly API allows real-time availability checking.
 2.Database Integration:
+
     Booked appointments are automatically fetched from Calendly and stored in a MySQL database for easy management.
 3.Google Calendar Integration:
+
     Appointments sync with Google Calendar, enabling customers to receive alerts and reminders through Google's notification system.
     New: Added a Google Calendar embed view to the website for users to view upcoming appointments directly.
 4.Dynamic Barber Selection:
+
     Customers can select a particular barber from the list of available professionals.
 5.User-Friendly Interface:
+
     Simple and intuitive design ensures a smooth booking experience for users.
 
 
