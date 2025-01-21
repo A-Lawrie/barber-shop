@@ -1,4 +1,10 @@
+<?php
+include 'includes/connect.php';
 
+// Get all the barbers
+$sql = "SELECT * FROM barbers LIMIT 3";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -222,7 +228,11 @@
                     </div><!-- end title -->
 
                     <div class="row dev-list text-center">
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.2s">
+                        <?php
+                        if ($result->num_rows > 0) {
+                            while($row = $result->fetch_assoc()) {
+                                ?>
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.2s">
                             <div class="widget clearfix">
 								<div class="hover-br">
 									<img src="uploads/barber_team_01.jpg" alt="" class="img-responsive">
@@ -236,57 +246,20 @@
 									</div>
 								</div>
                                 <div class="widget-title">
-                                    <h3>Soren Bo Bostian</h3>
-                                    <small>The Founder</small>
-                                </div>
-                                <!-- end title -->
-                                <p>Hello guys, I am Soren from Sirbistana. I am senior art director and founder of The Barber Shop Company.</p>
-                            </div><!--widget -->
-                        </div><!-- end col -->
-
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.4s">
-                            <div class="widget clearfix">
-								<div class="hover-br">
-									<img src="uploads/barber_team_03.jpg" alt="" class="img-responsive">
-									<div class="social-up-hover">
-										<div class="footer-social">
-											<a href="#" class="btn grd1"><i class="fa fa-facebook"></i></a>
-											<a href="#" class="btn grd1"><i class="fa fa-github"></i></a>
-											<a href="#" class="btn grd1"><i class="fa fa-twitter"></i></a>
-											<a href="#" class="btn grd1"><i class="fa fa-linkedin"></i></a>
-										</div>
-									</div>
-								</div>
-                                <div class="widget-title">
-                                    <h3>Bryan Saftler</h3>
+                                    <h3><?php echo htmlspecialchars($row['FName']. ' ' . $row['LName']);?></h3>
                                     <small>The Barber</small>
                                 </div>
                                 <!-- end title -->
-                                <p>Hello guys, I am Soren from Sirbistana. I am senior art director and barber of the Barber Shop Market.</p>
+                                <p>Hello guys, I am <?php echo htmlspecialchars($row['FName']);?> from Kenya. I am senior art director and founder of The Barber Shop Company.</p>
                             </div><!--widget -->
                         </div><!-- end col -->
-
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.6s">
-                            <div class="widget clearfix">
-								<div class="hover-br">
-									<img src="uploads/barber_team_02.jpg" alt="" class="img-responsive">
-									<div class="social-up-hover">
-										<div class="footer-social">
-											<a href="#" class="btn grd1"><i class="fa fa-facebook"></i></a>
-											<a href="#" class="btn grd1"><i class="fa fa-github"></i></a>
-											<a href="#" class="btn grd1"><i class="fa fa-twitter"></i></a>
-											<a href="#" class="btn grd1"><i class="fa fa-linkedin"></i></a>
-										</div>
-									</div>
-								</div>
-                                <div class="widget-title">
-                                    <h3>Matthew Bayliss</h3>
-                                    <small>The Barber</small>
-                                </div>
-                                <!-- end title -->
-                                <p>Hello guys, I am Soren from Sirbistana. I am senior art director and barber of the Barber Shop Website.</p>
-                            </div><!--widget -->
-                        </div><!-- end col -->
+                        
+                                <?php
+                            }
+                        } else {
+                            echo "0 results";
+                        }
+                        ?>
                     </div><!-- end row -->
                 </div><!-- end container -->
             </div><!-- end section -->
