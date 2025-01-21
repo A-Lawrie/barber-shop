@@ -235,11 +235,11 @@ $result = $conn->query($sql);
                                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.2s">
                             <div class="widget clearfix">
 								<div class="hover-br">
-									<img src="uploads/barber_team_01.jpg" alt="" class="img-responsive">
+									<img src="uploads/<?php echo htmlspecialchars($row['ProfilePicture']);?>" alt="" class="img-responsive">
 									<div class="social-up-hover">
 										<div class="footer-social">
 											<a href="#" class="btn grd1"><i class="fa fa-facebook"></i></a>
-											<a href="#" class="btn grd1"><i class="fa fa-github"></i></a>
+											<a href="<?php echo htmlspecialchars($row['CalendlyLink']);?>" class="btn grd1"><i class="fa fa-calendar"></i></a>
 											<a href="#" class="btn grd1"><i class="fa fa-twitter"></i></a>
 											<a href="#" class="btn grd1"><i class="fa fa-linkedin"></i></a>
 										</div>
