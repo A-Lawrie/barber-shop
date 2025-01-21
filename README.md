@@ -5,6 +5,7 @@ SMBarber is a barbershop website designed to streamline the appointment booking 
 Features
 
 1.Appointment Booking via Calendly:
+
     Customers can book appointments with specific barbers directly through the website.
     Integration with the Calendly API allows real-time availability checking.
 2.Database Integration:
