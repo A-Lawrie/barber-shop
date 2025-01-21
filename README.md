@@ -44,5 +44,7 @@ Get reminders and alerts through Google Calendar integration.
 **Contact**
 
 For any inquiries or support, please contact Lawrie.
+
 **Github** - https://github.com/A-Lawrie
+
 **Email** - lawrieabuna@gmail.com
